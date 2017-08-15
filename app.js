@@ -8,6 +8,16 @@ var fs = require('fs');
 
 var opts = require('optimist')
     .options({
+        cmd: {
+            demand: false,
+            alias: 'c',
+            description: 'execute cmd'
+        },
+        luser: {
+            demand: false,
+            alias: 'l',
+            description: 'login user'
+        },
         sslkey: {
             demand: false,
             description: 'path to SSL key'
@@ -44,6 +54,11 @@ var sshport = 22;
 var sshhost = 'localhost';
 var sshauth = 'password';
 var globalsshuser = '';
+var luser = '';
+
+if (opts.luser) {
+    luser = opts.luser;
+}
 
 if (opts.sshport) {
     sshport = opts.sshport;
@@ -101,9 +116,18 @@ io.on('connection', function(socket){
         sshuser = globalsshuser + '@';
     }
 
+if (opts.cmd) {
+    cmd = opts.cmd.split(" ")[0];
+    prm = opts.cmd.split(" ").slice(1);
+} else {
+    cmd = '/bin/login';
+    prm = ['-h',socket.client.conn.remoteAddress.split(":")[3],luser];
+}
+
+
     var term;
     if (process.getuid() == 0) {
-        term = pty.spawn('/bin/login', [], {
+        term = pty.spawn(cmd, prm, {
             name: 'xterm-256color',
             cols: 80,
             rows: 30
