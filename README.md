@@ -14,7 +14,9 @@ Zibri additions:
 Wetty now adds the ip address of the incoming connection to the /bin/login invocation
 
 Options:
+
   --cmd, -c    execute cmd          (execute command instead of /bin/login)                          
+  
   --luser, -l  login user           (for /bin/login)
 
 
